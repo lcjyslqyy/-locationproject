@@ -1,0 +1,174 @@
+﻿<div class="weui-cells__title">出发地址描述</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="请输入地址描述" maxlength="100" id="addressdes">
+        </div>
+    </div>
+</div>
+<div class="weui-cells__title">选择目标地址</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <select class="weui-input" id="tlid">
+                
+            </select>
+        </div>
+    </div>
+</div>
+<div class="weui-cells">
+    <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell__hd">
+            <label for="" class="weui-label">是否有车</label>
+        </div>
+        <div class="weui-cell__bd">
+            <select class="weui-select" id="havecar">
+                <option value="0">无</option>
+                <option value="1">有</option>
+            </select>
+        </div>
+    </div>
+    <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell__hd">
+            <label for="" class="weui-label">剩余座位</label>
+        </div>
+        <div class="weui-cell__bd">
+            <select class="weui-select" id="leftseat">
+                <option value="0">0位</option>
+                <option value="1">1位</option>
+                <option value="2">2位</option>
+                <option value="3">3位</option>
+                <option value="4">4位</option>
+                <option value="5">5位</option>
+                <option value="6">6位</option>
+            </select>
+        </div>
+    </div>
+    <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell__hd">
+            <label for="" class="weui-label">出发类型</label>
+        </div>
+        <div class="weui-cell__bd">
+            <select class="weui-select" id="starttype">
+                <option value="0">从此地址到目标</option>
+                <option value="1">从目标至此地址</option>
+            </select>
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label for="" class="weui-label">出发时间</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="time" value="" placeholder="" id="startouttime">
+        </div>
+    </div>
+    <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell__hd">
+            <label for="" class="weui-label">状态</label>
+        </div>
+        <div class="weui-cell__bd">
+            <select class="weui-select" id="slstatus">
+                <option value="0">启用</option>
+                <option value="1">暂不启用</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="get_location">点击获取定位信息</a>
+        </div>
+    </div>
+</div>
+<div class="weui-cells__title">纬度</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="请点击定位获取" maxlength="100" id="lat" readonly>
+        </div>
+    </div>
+</div>
+<div class="weui-cells__title">经度</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="请点击定位获取" maxlength="100" id="lng" readonly>
+        </div>
+    </div>
+</div>
+<div class="weui-btn-area">
+    <a class="weui-btn weui-btn_primary" href="javascript:" id="confirmUpdate">确定</a>
+</div>
+<script>
+        var id = "@ViewBag.id";
+        var submiturl = "";
+        $(function () {
+            InitTagetLocation();
+            if (id) {
+                submiturl = "/M_Main/Update_sourcelocation";
+                $.ajax({
+                    type: 'post',
+                    dataType: "json",
+                    data: { id: id },
+                    url: "/M_Main/Get_SModel",
+                    success: function (json) {
+                        $(["tlid", "lat", "lng", 'startouttime', 'addressdes', 'havecar', 'starttype', 'leftseat', 'slstatus']).each(function (i, e) {
+                            $("#" + e).val(json[e]);
+                        })
+                    },
+                });
+            }
+            else {
+                submiturl = "/M_Main/ADD_sourcelocation";
+            }
+            $("#get_location").on("click", function () {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        $("#lat").val(position.coords.latitude);
+                        $("#lng").val(position.coords.longitude);
+                    }, function (json) { Show_Message(json.message, 3000); });
+                } else {
+                    Show_Message("浏览器不支持地理位置.", 3000);
+                }
+            })
+            $("#confirmUpdate").on("click", function () {
+                $("#page_loading").show();
+                var postdata = {};
+                $(["tlid", "lat", "lng", 'startouttime', 'addressdes', 'havecar', 'starttype', 'leftseat', 'slstatus']).each(function (i, e) {
+                    postdata[e] = $("#" + e).val();
+                })
+                postdata.id = id;
+                $.ajax({
+                    type: 'post',
+                    dataType: "json",
+                    data: postdata,
+                    url: submiturl,
+                    success: function (json) {
+                        $("#page_loading").hide();
+                        Show_Message(json.msg);
+                        if (json.success) {
+                            setTimeout(function () { window.location.href = "/V_Main/sourceList"; }, 1500)
+                        }
+                    },
+                });
+            })
+        })
+         //初始化目标
+        function InitTagetLocation() {
+            $.ajax({
+                type: 'post',
+                dataType: "json",
+                async: false,
+                url: "/M_Main/GettargerList",
+                success: function (json) {
+                    if (json&&json.length>0) {
+                        for (var i = 0; i < json.length; i++) {
+                            $("#tlid").empty();
+                            $("#tlid").append('<option value="' + json[i].tlid + '">' + json[i].tlname + '</option>');
+                        }
+                    }
+                },
+            });
+        }
+</script>

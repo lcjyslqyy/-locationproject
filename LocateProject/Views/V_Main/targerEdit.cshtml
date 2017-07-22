@@ -1,0 +1,88 @@
+﻿<div class="weui-cells__title">目标地址名称</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="请输入目标地址名称" maxlength="100" id="tlname">
+        </div>
+    </div>
+</div>
+
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="get_location">点击获取定位信息</a>
+        </div>
+    </div>
+</div>
+<div class="weui-cells__title">纬度</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="请点击定位获取" maxlength="100" id="lat" readonly>
+        </div>
+    </div>
+</div>
+<div class="weui-cells__title">经度</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="请点击定位获取" maxlength="100" id="lng" readonly>
+        </div>
+    </div>
+</div>
+<div class="weui-btn-area">
+    <a class="weui-btn weui-btn_primary" href="javascript:" id="confirmUpdate">确定</a>
+</div>
+<script>
+    var id = "@ViewBag.id";
+    var submiturl = "";
+    $(function () {
+        if (id) {
+            submiturl = "/M_Main/Update_targetlocation";
+            $.ajax({
+                type: 'post',
+                dataType: "json",
+                data: {id:id},
+                url: "/M_Main/Get_TModel",
+                success: function (json) {
+                    $(["tlname", "lat", "lng"]).each(function (i, e) {
+                        $("#" + e).val(json[e]);
+                    })
+                },
+            });
+        }
+        else {
+            submiturl = "/M_Main/ADD_targetlocation";
+        }
+        $("#get_location").on("click", function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    $("#lat").val(position.coords.latitude);
+                    $("#lng").val(position.coords.longitude);
+                }, function (json) { Show_Message(json.message, 3000); });
+            } else {
+                Show_Message("浏览器不支持地理位置.",3000);
+            }
+        })      
+        $("#confirmUpdate").on("click", function () {
+            $("#page_loading").show();
+            if (!$("#tlname").val()) {
+                Show_Message("地址名称不能为空!");
+                return;
+            }
+            $.ajax({
+                type: 'post',
+                dataType: "json",
+                data: { tlname: $("#tlname").val(), lat: $("#lat").val(), lng: $("#lng").val(), id: id },
+                url: submiturl,
+                success: function (json) {
+                    $("#page_loading").hide();
+                    Show_Message(json.msg);
+                    if (json.success) {
+                        setTimeout(function () { window.location.href = "/V_Main/targerList"; }, 1500)
+                    }
+                },
+            });
+        })
+    })
+</script>

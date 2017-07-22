@@ -1,0 +1,45 @@
+﻿<div class="container" id="container">
+    <div class="page home js_show">
+        <div class="weui-btn-area">
+            <a class="weui-btn weui-btn_primary" href="/V_Main/sourceEdit">新增地址</a>
+        </div>
+        <div class="page__bd page__bd_spacing">
+            <ul>
+                <li class="js_show">
+                    <div class="weui-flex js_category">
+                        <p class="weui-flex__item">出发地址列表</p>
+                    </div>
+                    <hr />
+                    <div class="page__category js_categoryInner" data-height="225" style="">
+                        <div class="weui-cells page__category-content" id="source_addresslist">
+                                                        
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        InitSLocationList();
+    })
+    function InitSLocationList() {
+        $("#page_loading").show();
+        $.ajax({
+            type: 'get',
+            dataType: "json",
+            url: "/M_Main/Get_SourceLactionList",
+            success: function (json) {
+                $("#page_loading").hide();
+                if (json&&json.length>0) {
+                    $("#source_addresslist").empty();
+                    for (var i = 0; i < json.length; i++) {
+                        $("#source_addresslist").append('<a class="weui-cell weui-cell_access js_item" href="/V_Main/sourceEdit/' + json[i].slid + '"><div class="weui-cell__bd"><p>' + json[i].addressdes + '</p></div><div class="weui-cell__ft"></div></a>');
+                    }
+                }
+            },
+        });
+    }
+    
+</script>

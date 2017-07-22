@@ -1,0 +1,44 @@
+﻿<div class="container" id="container">
+    <div class="page home js_show">
+        <div class="weui-btn-area">
+            <a class="weui-btn weui-btn_primary" href="/V_Main/targerEdit">新增地址</a>
+        </div>
+        <div class="page__bd page__bd_spacing">
+            <ul>
+                <li class="js_show">
+                    <div class="weui-flex js_category">
+                        <p class="weui-flex__item">目标地址列表</p>
+                    </div>
+                    <hr />
+                    <div class="page__category js_categoryInner" data-height="225" style="">
+                        <div class="weui-cells page__category-content" id="taget_addresslist">
+
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        InitTLocationList();
+    })
+    function InitTLocationList() {
+        $("#page_loading").show();
+        $.ajax({
+            type: 'get',
+            dataType: "json",
+            url: "/M_Main/Get_TargerLactionList",
+            success: function (json) {
+                $("#page_loading").hide();
+                if (json&&json.length>0) {
+                    $("#taget_addresslist").empty();
+                    for (var i = 0; i < json.length; i++) {
+                        $("#taget_addresslist").append('<a class="weui-cell weui-cell_access js_item" href="/V_Main/targerEdit/' + json[i].tlid + '"><div class="weui-cell__bd"><p>' + json[i].tlname + '</p></div><div class="weui-cell__ft"></div></a>');
+                    }
+                }
+            },
+        });
+    }
+</script>
