@@ -24,6 +24,6 @@
 # 出发地址管理/出发地址编辑
 ![image](https://raw.githubusercontent.com/lcjyslqyy/-locationproject/master/webimages/5.png)
 ![image](https://raw.githubusercontent.com/lcjyslqyy/-locationproject/master/webimages/6.png)
-# 修改个人信息/放在google earth上面的效果
+# 修改个人信息/经纬度显示在谷歌地球效果
 ![image](https://raw.githubusercontent.com/lcjyslqyy/-locationproject/master/webimages/4.png)
-![image](https://raw.githubusercontent.com/lcjyslqyy/-locationproject/master/webimages/6.png)
+![image](https://raw.githubusercontent.com/lcjyslqyy/-locationproject/master/webimages/8.png)
