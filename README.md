@@ -16,6 +16,7 @@
     后端使用的是asp.net mvc4,ORM则用的是很早版本的petapoco的源码.我自己对强类型的依赖并不是太高..而且我更倾向dbfirst</br>
     此项目是我第一次使用autofac进行开发,当时计划使用autofac就是想试一下去掉了bll层,直接由controler处理大部分逻辑,更进一步的复杂的逻辑则使用DAL进行处理.由于项目较小,看不出太多的坏处.但是好处就是代码更加简单了,同是少掉一层会提升一点点性能吧.没有时间做进一步的测试,未知;希望大家能帮忙分析一下.
 <h1>注册页面,未做认真的校验,可按需拓展<h1>
+![before and after](http://i.imgur.com/H4yUEC6.jpg)
 ![注册页面](https://raw.githubusercontent.com/lcjyslqyy/-locationproject/master/webimages/7.png)
 <h1>个人中心<h1>
 ![image](https://raw.githubusercontent.com/lcjyslqyy/-locationproject/master/webimages/1.png)
